@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardtray — Digital Business Cards</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="site-head">
+    <div>
+      <p class="mark">Cardtray</p>
+      <h1>Your card tray</h1>
+      <p>Punch a new card, flip any card to reveal its QR stamp, or copy a link. Everything lives in this browser — nothing is sent to a server.</p>
+    </div>
+    <button class="btn primary" id="add-card-btn">+ New card</button>
+  </div>
+
+  <div class="empty" id="empty">
+    <div class="mark">Tray empty</div>
+    <h2>You haven't punched a card yet</h2>
+    <button class="btn" id="empty-add-btn">Punch your first card</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer class="foot-note">Stored locally on this device · export a card to share it anywhere</footer>
+</div>
+
+<!-- Add / Edit modal -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <h2 id="modal-title">New card</h2>
+    <p class="sub">Fields left blank just won't appear on the card.</p>
+    <form id="card-form">
+      <div class="field">
+        <label for="f-name">Name</label>
+        <input id="f-name" name="name" type="text" placeholder="Ada Lovelace" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-title">Title</label>
+          <input id="f-title" name="title" type="text" placeholder="Mathematician">
+        </div>
+        <div class="field">
+          <label for="f-company">Company</label>
+          <input id="f-company" name="company" type="text" placeholder="Analytical Engines Co.">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" placeholder="ada@example.com">
+        </div>
+        <div class="field">
+          <label for="f-phone">Phone</label>
+          <input id="f-phone" name="phone" type="tel" placeholder="+1 555 010 0000">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-website">Website / link</label>
+        <input id="f-website" name="website" type="text" placeholder="example.com">
+      </div>
+      <div class="field">
+        <label for="f-bio">Note</label>
+        <textarea id="f-bio" name="bio" rows="2" placeholder="A short line about you"></textarea>
+      </div>
+      <div class="field">
+        <label>Card stock</label>
+        <div class="stock-picker">
+          <div class="stock-dot selected" data-stock="navy" style="background:#14213D"></div>
+          <div class="stock-dot" data-stock="forest" style="background:#1F4B3F"></div>
+          <div class="stock-dot" data-stock="burgundy" style="background:#5B1F2E"></div>
+          <div class="stock-dot" data-stock="charcoal" style="background:#2B2926"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="cancel-btn">Cancel</button>
+        <button type="submit" class="btn primary">Save card</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
