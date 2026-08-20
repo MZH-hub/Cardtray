@@ -13,8 +13,12 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-const STOCKS = {
-  navy:'#14213D', forest:'#1F4B3F', burgundy:'#5B1F2E', charcoal:'#2B2926'
+const ACCENTS = ['teal','blue','plum','gold','forest'];
+
+const ICONS = {
+  email: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>`,
+  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  website: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
 };
 
 function decodeCard(b64){
@@ -24,7 +28,7 @@ function decodeCard(b64){
   const p = JSON.parse(json);
   return {
     name:p.n, title:p.t, company:p.c, email:p.e,
-    phone:p.p, website:p.w, bio:p.b, stock:p.s || 'navy'
+    phone:p.p, website:p.w, bio:p.b, stock: ACCENTS.includes(p.s) ? p.s : 'teal'
   };
 }
 
@@ -32,6 +36,14 @@ function escapeHtml(str){
   const d = document.createElement('div');
   d.textContent = str || '';
   return d.innerHTML;
+}
+
+function contactRows(card){
+  const rows = [];
+  if(card.email) rows.push(`<div class="contact-row">${ICONS.email}<span>${escapeHtml(card.email)}</span></div>`);
+  if(card.phone) rows.push(`<div class="contact-row">${ICONS.phone}<span>${escapeHtml(card.phone)}</span></div>`);
+  if(card.website) rows.push(`<div class="contact-row">${ICONS.website}<span>${escapeHtml(card.website)}</span></div>`);
+  return rows.join('');
 }
 
 function vCardText(card){
@@ -85,31 +97,22 @@ if(!d){
   }
 
   if(card){
-    const stockColor = STOCKS[card.stock] || STOCKS.navy;
-    const rows = [];
-    if(card.email) rows.push(`<li><span class="k">Email</span><a href="mailto:${escapeHtml(card.email)}">${escapeHtml(card.email)}</a></li>`);
-    if(card.phone) rows.push(`<li><span class="k">Phone</span><a href="tel:${escapeHtml(card.phone)}">${escapeHtml(card.phone)}</a></li>`);
-    if(card.website){
-      const href = /^https?:\/\//.test(card.website) ? card.website : `https://${card.website}`;
-      rows.push(`<li><span class="k">Web</span><a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(card.website)}</a></li>`);
-    }
-
     root.innerHTML = `
-      <div class="no" style="margin-bottom:16px">Digital business card</div>
       <div class="big-flip-slot" id="flip-slot">
         <div class="card-flip">
-          <div class="card-face front" style="background:${stockColor}">
+          <div class="card-face front acc-${card.stock}">
             <div class="card-front">
-              <div class="no">Front</div>
-              <div>
-                <h1>${escapeHtml(card.name)}</h1>
-                ${card.title ? `<p class="role">${escapeHtml(card.title)}</p>` : ''}
-                ${card.company ? `<div class="co">${escapeHtml(card.company)}</div>` : ''}
+              <div class="logo-row"><img src="logo.svg" alt="Organization logo"></div>
+              <div class="id">
+                <h3>${escapeHtml(card.name)}</h3>
+                <p class="role">${escapeHtml(card.title || '')}</p>
               </div>
-              <div class="no">Tap to flip &#8635;</div>
+              <div class="contacts">${contactRows(card)}</div>
             </div>
+            <div class="arches"><div class="arch light"></div><div class="arch dark"></div></div>
+            <div class="flip-hint">Tap to flip &#8635;</div>
           </div>
-          <div class="card-face back">
+          <div class="card-face back acc-${card.stock}">
             <div class="card-back">
               <div class="qr-wrap" id="qr"></div>
               <div class="stamp-text">
@@ -122,10 +125,9 @@ if(!d){
       </div>
       <p class="flip-instruction">Tap the card to flip it</p>
 
-      ${(card.bio || rows.length) ? `
-      <div class="big-card" style="margin-top:22px; text-align:left;">
-        ${card.bio ? `<p class="bio" style="margin-top:0">${escapeHtml(card.bio)}</p>` : ''}
-        ${rows.length ? `${card.bio ? '<hr>' : ''}<ul class="contact-list">${rows.join('')}</ul>` : ''}
+      ${card.bio ? `
+      <div class="big-card" style="margin-top:22px; text-align:left; padding:22px 24px;">
+        <p class="bio" style="margin-top:0">${escapeHtml(card.bio)}</p>
       </div>` : ''}
 
       <div class="view-actions">
@@ -138,7 +140,7 @@ if(!d){
       text: window.location.href,
       width: 108,
       height: 108,
-      colorDark: stockColor,
+      colorDark: '#115C71',
       colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.M
     });

@@ -1,0 +1,11 @@
+<svg width="230" height="48" viewBox="0 0 230 48" xmlns="http://www.w3.org/2000/svg">
+  <path d="M3 46 V24 A19 19 0 0 1 41 24 V46 Z" fill="#338991"/>
+  <path d="M3 46 H41" stroke="#ffffff" stroke-width="2"/>
+  <line x1="22" y1="44" x2="22" y2="16" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+  <line x1="22" y1="24" x2="13" y2="18" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="22" y1="24" x2="31" y2="18" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="22" y1="32" x2="15" y2="27" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="22" y1="32" x2="29" y2="27" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+  <text x="52" y="22" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" letter-spacing="0.4" fill="#115C71">YOUR</text>
+  <text x="52" y="38" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" letter-spacing="0.4" fill="#115C71">ORGANIZATION</text>
+</svg>

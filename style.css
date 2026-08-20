@@ -1,22 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 :root{
-  --ink:#14213D;
-  --ink-2:#1D2E52;
-  --paper:#EFE9DA;
-  --paper-2:#E6DFCC;
-  --brass:#B08D57;
-  --brass-light:#D3B584;
-  --stamp:#B33F2E;
-  --charcoal:#262220;
-  --line: rgba(20,33,61,0.14);
-  --paper-line: rgba(38,34,32,0.16);
-  --shadow: 0 18px 40px rgba(10,15,30,0.35), 0 2px 6px rgba(10,15,30,0.25);
-  --stock-navy:#14213D;
-  --stock-forest:#1F4B3F;
-  --stock-burgundy:#5B1F2E;
-  --stock-charcoal:#2B2926;
-  --radius: 10px;
+  --ink:#0F2233;
+  --ink-2:#16324A;
+  --paper:#FFFFFF;
+  --slate:#22303A;
+  --slate-soft:rgba(34,48,58,0.6);
+  --line: rgba(15,34,51,0.25);
+  --hair: rgba(20,40,50,0.10);
+  --shadow: 0 18px 40px rgba(6,12,22,0.45), 0 2px 6px rgba(6,12,22,0.3);
+  --radius: 12px;
+
+  /* default (teal) accent — sampled from the reference card */
+  --acc-name:#115C71;
+  --acc-title:#2AA6A4;
+  --acc-dark:#338991;
+  --acc-light:#7ABFBE;
+}
+
+/* accent themes, applied per-card via data-accent on .card-face */
+.acc-teal   { --acc-name:#115C71; --acc-title:#2AA6A4; --acc-dark:#338991; --acc-light:#7ABFBE; }
+.acc-blue   { --acc-name:#123A5C; --acc-title:#2E86C1; --acc-dark:#1F6690; --acc-light:#8FC1E3; }
+.acc-plum   { --acc-name:#4B1F3D; --acc-title:#A8558F; --acc-dark:#7A3566; --acc-light:#D3A0C2; }
+.acc-gold   { --acc-name:#5C4413; --acc-title:#C9962F; --acc-dark:#A67C24; --acc-light:#E8C97A; }
+.acc-forest { --acc-name:#17402F; --acc-title:#3FA06A; --acc-dark:#276B4A; --acc-light:#9AD3B4; }
+
+/* legacy aliases so page chrome (buttons, modal) keeps working with the new palette */
+:root{
+  --brass:#2AA6A4;
+  --brass-light:#7ABFBE;
+  --stamp:#338991;
+  --charcoal:#22303A;
+  --paper-line: rgba(34,48,58,0.16);
+  --paper-2:#F1F5F5;
 }
 
 *{box-sizing:border-box;}
@@ -139,64 +155,91 @@ a{color:inherit;}
   overflow:hidden;
   display:flex;
   flex-direction:column;
+  background:var(--paper);
 }
 .card-face.back{transform:rotateY(180deg);}
 
-/* perforation strip evoking a rolodex card edge */
-.perf{
+/* decorative arch ribbons, echoing the brand mark, bottom-right of the front face */
+.arches{
   position:absolute;
-  left:0; top:0; bottom:0;
-  width:14px;
-  background-image: radial-gradient(circle, rgba(20,33,61,0.35) 2.5px, transparent 2.6px);
-  background-size: 14px 16px;
-  background-position: 4px 8px;
-  opacity:.55;
+  right:0;
+  bottom:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+.arch{
+  position:absolute;
+  bottom:-30%;
+  border-radius:999px 999px 0 0;
+}
+.arch.light{
+  right:-6%;
+  width:26%;
+  height:170%;
+  background:var(--acc-light);
+  transform:rotate(9deg);
+}
+.arch.dark{
+  right:14%;
+  width:22%;
+  height:150%;
+  background:var(--acc-dark);
+  transform:rotate(5deg);
 }
 
 .card-front{
-  color:var(--paper);
-  padding:22px 22px 18px 32px;
+  color:var(--slate);
+  padding:16px 76px 14px 20px;
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
+  gap:7px;
   height:100%;
+  position:relative;
+  z-index:2;
 }
-.card-front .no{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:10.5px;
-  letter-spacing:.14em;
-  opacity:.55;
-  text-transform:uppercase;
+.card-front .logo-row img{
+  height:26px;
+  display:block;
 }
 .card-front .id h3{
-  font-family:'Fraunces', serif;
-  font-weight:600;
-  font-size:22px;
-  margin:2px 0 3px;
-  line-height:1.15;
+  font-family:'IBM Plex Sans', sans-serif;
+  font-weight:700;
+  font-size:19px;
+  margin:2px 0 1px;
+  line-height:1.2;
+  color:var(--acc-name);
 }
 .card-front .id .role{
-  font-size:13px;
-  opacity:.8;
+  font-size:12.5px;
+  font-weight:500;
   margin:0;
+  color:var(--acc-title);
 }
-.card-front .id .co{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11px;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  opacity:.6;
-  margin-top:6px;
+.card-front .contacts{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin-top:auto;
 }
-.card-front .foot{
+.contact-row{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  gap:7px;
+  font-size:10.5px;
+  color:var(--slate);
+  line-height:1.3;
 }
-.card-front .contact-line{
-  font-size:11.5px;
-  opacity:.65;
-  font-family:'IBM Plex Mono', monospace;
+.contact-row svg{
+  width:12px; height:12px;
+  flex-shrink:0;
+  color:var(--slate);
+}
+.contact-row span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .card-actions{
@@ -211,55 +254,57 @@ a{color:inherit;}
 }
 .card-slot:hover .card-actions{opacity:1;}
 .icon-btn{
-  width:28px; height:28px;
+  width:26px; height:26px;
   border-radius:50%;
-  border:1px solid rgba(255,255,255,0.25);
-  background:rgba(20,33,61,0.55);
-  color:inherit;
+  border:1px solid var(--hair);
+  background:rgba(255,255,255,0.9);
+  color:var(--slate);
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:13px;
-  backdrop-filter: blur(2px);
+  font-size:12px;
+  box-shadow:0 2px 6px rgba(15,34,51,0.15);
 }
-.icon-btn:hover{background:rgba(0,0,0,0.55);}
+.icon-btn:hover{background:var(--paper-2);}
 
-/* back of card: paper stamp side with QR */
+/* back of card: QR stamp side */
 .card-back{
   background:var(--paper);
-  color:var(--charcoal);
+  color:var(--slate);
   height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:16px;
-  padding:18px 22px 18px 32px;
+  padding:18px 22px;
   position:relative;
 }
 .card-back .qr-wrap{
   background:#fff;
   padding:8px;
   border-radius:6px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  border:1px solid var(--hair);
   flex-shrink:0;
 }
 .card-back .qr-wrap img, .card-back .qr-wrap canvas{display:block;}
 .card-back .stamp-text{
   font-family:'IBM Plex Mono', monospace;
   font-size:10.5px;
-  letter-spacing:.1em;
+  letter-spacing:.08em;
   text-transform:uppercase;
   line-height:1.6;
+  color:var(--slate-soft);
 }
 .card-back .stamp-text .name{
-  font-family:'Fraunces', serif;
-  font-size:16px;
+  font-family:'IBM Plex Sans', sans-serif;
+  font-size:15px;
   text-transform:none;
   letter-spacing:0;
-  font-weight:600;
+  font-weight:700;
   display:block;
   margin-bottom:4px;
+  color:var(--acc-name);
 }
 .card-back .row-actions{
   display:flex;
@@ -273,14 +318,14 @@ a{color:inherit;}
   letter-spacing:.06em;
   text-transform:uppercase;
   background:none;
-  border:1px solid var(--paper-line);
-  color:var(--charcoal);
+  border:1px solid var(--hair);
+  color:var(--slate);
   border-radius:4px;
   padding:5px 9px;
   cursor:pointer;
   text-align:left;
 }
-.card-back .row-actions button:hover{background:rgba(38,34,32,0.08);}
+.card-back .row-actions button:hover{background:var(--paper-2);}
 
 .flip-hint{
   position:absolute;
@@ -290,8 +335,9 @@ a{color:inherit;}
   font-size:9.5px;
   letter-spacing:.12em;
   text-transform:uppercase;
-  opacity:.4;
+  color:var(--slate-soft);
   cursor:pointer;
+  z-index:2;
 }
 
 /* ---------- Modal / form ---------- */
@@ -353,12 +399,12 @@ a{color:inherit;}
 .field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
 .stock-picker{display:flex; gap:8px; margin-top:2px;}
 .stock-dot{
-  width:28px; height:28px;
+  width:26px; height:26px;
   border-radius:50%;
   cursor:pointer;
   border:2px solid transparent;
 }
-.stock-dot.selected{border-color:var(--stamp);}
+.stock-dot.selected{border-color:var(--acc-title, #22303A);}
 .modal-actions{
   display:flex;
   justify-content:flex-end;
@@ -496,12 +542,12 @@ footer.foot-note{
 }
 .not-found{color:rgba(239,233,218,0.7); font-size:14px; line-height:1.7;}
 
-/* standalone flip card on the shared view */
+/* standalone flip card on the shared view — reuses .card-front/.card-back/.arches */
 .big-flip-slot{
   perspective:1800px;
   width:100%;
-  max-width:380px;
-  aspect-ratio:1.6/1;
+  max-width:400px;
+  aspect-ratio:1.72/1;
   margin:0 auto;
   cursor:pointer;
 }
@@ -513,82 +559,14 @@ footer.foot-note{
   transform-style:preserve-3d;
 }
 .big-flip-slot.flipped .card-flip{transform:rotateY(180deg);}
-.big-flip-slot .card-face{
-  position:absolute;
-  inset:0;
-  border-radius:14px;
-  backface-visibility:hidden;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.big-flip-slot .card-face.back{transform:rotateY(180deg);}
-.big-flip-slot .card-front{
-  color:var(--paper);
-  height:100%;
-  padding:26px 26px 20px 34px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-.big-flip-slot .card-front .no{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:10.5px;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  opacity:.55;
-}
-.big-flip-slot .card-front h1{
-  font-family:'Fraunces', serif;
-  font-weight:700;
-  font-size:26px;
-  margin:4px 0 4px;
-  line-height:1.15;
-}
-.big-flip-slot .card-front .role{font-size:14px; opacity:.8; margin:0;}
-.big-flip-slot .card-front .co{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11px;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  opacity:.6;
-  margin-top:6px;
-}
-.big-flip-slot .card-back{
-  background:var(--paper);
-  color:var(--charcoal);
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:16px;
-  padding:20px 26px 20px 34px;
-  position:relative;
-}
-.big-flip-slot .card-back .qr-wrap{
-  background:#fff;
-  padding:8px;
-  border-radius:6px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-  flex-shrink:0;
-  margin:0;
-}
-.big-flip-slot .stamp-text{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:10.5px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  line-height:1.6;
-  text-align:left;
-}
-.big-flip-slot .stamp-text .name{
-  font-family:'Fraunces', serif;
-  font-size:16px;
-  text-transform:none;
-  letter-spacing:0;
-  font-weight:600;
-  display:block;
-  margin-bottom:4px;
-}
+.big-flip-slot .card-front{padding:24px 90px 22px 26px; gap:12px;}
+.big-flip-slot .card-front .logo-row img{height:30px;}
+.big-flip-slot .card-front .id h3{font-size:23px;}
+.big-flip-slot .card-front .id .role{font-size:14px;}
+.big-flip-slot .contact-row{font-size:12px;}
+.big-flip-slot .contact-row svg{width:13px; height:13px;}
+.big-flip-slot .flip-hint{color:var(--slate-soft);}
+
 .flip-instruction{
   text-align:center;
   font-family:'IBM Plex Mono', monospace;
