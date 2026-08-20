@@ -30,9 +30,35 @@ function cardShareUrl(card){
   return base.href;
 }
 
-const STOCKS = {
-  navy:'#14213D', forest:'#1F4B3F', burgundy:'#5B1F2E', charcoal:'#2B2926'
+const ACCENTS = ['teal','blue','plum','gold','forest'];
+
+const ICONS = {
+  email: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>`,
+  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  website: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
 };
+
+function contactRows(card){
+  const rows = [];
+  if(card.email) rows.push(`<div class="contact-row">${ICONS.email}<span>${escapeHtml(card.email)}</span></div>`);
+  if(card.phone) rows.push(`<div class="contact-row">${ICONS.phone}<span>${escapeHtml(card.phone)}</span></div>`);
+  if(card.website) rows.push(`<div class="contact-row">${ICONS.website}<span>${escapeHtml(card.website)}</span></div>`);
+  return rows.join('');
+}
+
+function cardFaceMarkup(card, accent){
+  return `
+    <div class="card-front">
+      <div class="logo-row"><img src="logo.svg" alt="Organization logo"></div>
+      <div class="id">
+        <h3>${escapeHtml(card.name || 'Unnamed')}</h3>
+        <p class="role">${escapeHtml(card.title || '')}</p>
+      </div>
+      <div class="contacts">${contactRows(card)}</div>
+    </div>
+    <div class="arches"><div class="arch light"></div><div class="arch dark"></div></div>
+  `;
+}
 
 /* ---------- rendering ---------- */
 const grid = document.getElementById('grid');
@@ -49,37 +75,23 @@ function render(){
   empty.style.display = 'none';
   grid.style.display = 'grid';
 
-  cards.forEach((card, i) => {
+  cards.forEach((card) => {
     const slot = document.createElement('div');
     slot.className = 'card-slot';
     slot.dataset.id = card.id;
-
-    const stockColor = STOCKS[card.stock] || STOCKS.navy;
-    const no = String(i+1).padStart(3,'0');
+    const accent = ACCENTS.includes(card.stock) ? card.stock : 'teal';
 
     slot.innerHTML = `
       <div class="card-flip">
-        <div class="card-face front" style="background:${stockColor}">
-          <div class="perf"></div>
+        <div class="card-face front acc-${accent}">
           <div class="card-actions">
             <button class="icon-btn" data-action="edit" title="Edit">&#9998;</button>
             <button class="icon-btn" data-action="delete" title="Delete">&times;</button>
           </div>
-          <div class="card-front">
-            <div class="no">No. ${no}</div>
-            <div class="id">
-              <h3>${escapeHtml(card.name || 'Unnamed')}</h3>
-              <p class="role">${escapeHtml(card.title || '')}</p>
-              <div class="co">${escapeHtml(card.company || '')}</div>
-            </div>
-            <div class="foot">
-              <div class="contact-line">${escapeHtml(card.email || card.phone || '')}</div>
-            </div>
-          </div>
+          ${cardFaceMarkup(card, accent)}
           <div class="flip-hint" data-action="flip">Flip &#8635;</div>
         </div>
-        <div class="card-face back">
-          <div class="perf"></div>
+        <div class="card-face back acc-${accent}">
           <div class="card-back">
             <div class="qr-wrap" data-qr></div>
             <div>
@@ -103,9 +115,9 @@ function render(){
     const qrHost = slot.querySelector('[data-qr]');
     new QRCode(qrHost, {
       text: cardShareUrl(card),
-      width: 108,
-      height: 108,
-      colorDark: '#14213D',
+      width: 100,
+      height: 100,
+      colorDark: '#115C71',
       colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.M
     });
@@ -166,7 +178,7 @@ function openModal(card){
   form.phone.value = card?.phone || '';
   form.website.value = card?.website || '';
   form.bio.value = card?.bio || '';
-  const stock = card?.stock || 'navy';
+  const stock = ACCENTS.includes(card?.stock) ? card.stock : 'teal';
   document.querySelectorAll('.stock-dot').forEach(d => {
     d.classList.toggle('selected', d.dataset.stock === stock);
   });
@@ -204,7 +216,7 @@ form.addEventListener('submit', (e) => {
     phone: form.phone.value.trim(),
     website: form.website.value.trim(),
     bio: form.bio.value.trim(),
-    stock: form.dataset.stock || 'navy'
+    stock: form.dataset.stock || 'teal'
   };
   if(!data.name){
     form.name.focus();
