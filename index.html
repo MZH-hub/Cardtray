@@ -13,7 +13,7 @@
     <div>
       <p class="mark">Cardtray</p>
       <h1>Your card tray</h1>
-      <p>Punch a new card, flip any card to reveal its QR stamp, or copy a link. Everything lives in this browser — nothing is sent to a server.</p>
+      <p>Punch a new card, tap it to flip between the QR side and your details, or copy a link. Everything lives in this browser — nothing is sent to a server.</p>
     </div>
     <button class="btn primary" id="add-card-btn">+ New card</button>
   </div>
@@ -59,6 +59,16 @@
           <input id="f-phone" name="phone" type="tel" placeholder="+1 555 010 0000">
         </div>
       </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-phone">Phone</label>
+          <input id="f-phone" name="phone" type="tel" placeholder="+960 3020265">
+        </div>
+        <div class="field">
+          <label for="f-mobile">Mobile</label>
+          <input id="f-mobile" name="mobile" type="tel" placeholder="+960 7768796">
+        </div>
+      </div>
       <div class="field">
         <label for="f-website">Website / link</label>
         <input id="f-website" name="website" type="text" placeholder="example.com">
@@ -66,16 +76,6 @@
       <div class="field">
         <label for="f-bio">Note</label>
         <textarea id="f-bio" name="bio" rows="2" placeholder="A short line about you"></textarea>
-      </div>
-      <div class="field">
-        <label>Accent color</label>
-        <div class="stock-picker">
-          <div class="stock-dot selected" data-stock="teal" style="background:#338991" title="Teal"></div>
-          <div class="stock-dot" data-stock="blue" style="background:#1F6690" title="Blue"></div>
-          <div class="stock-dot" data-stock="plum" style="background:#7A3566" title="Plum"></div>
-          <div class="stock-dot" data-stock="gold" style="background:#A67C24" title="Gold"></div>
-          <div class="stock-dot" data-stock="forest" style="background:#276B4A" title="Forest"></div>
-        </div>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn ghost" id="cancel-btn">Cancel</button>

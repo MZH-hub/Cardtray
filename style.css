@@ -18,12 +18,8 @@
   --acc-light:#7ABFBE;
 }
 
-/* accent themes, applied per-card via data-accent on .card-face */
-.acc-teal   { --acc-name:#115C71; --acc-title:#2AA6A4; --acc-dark:#338991; --acc-light:#7ABFBE; }
-.acc-blue   { --acc-name:#123A5C; --acc-title:#2E86C1; --acc-dark:#1F6690; --acc-light:#8FC1E3; }
-.acc-plum   { --acc-name:#4B1F3D; --acc-title:#A8558F; --acc-dark:#7A3566; --acc-light:#D3A0C2; }
-.acc-gold   { --acc-name:#5C4413; --acc-title:#C9962F; --acc-dark:#A67C24; --acc-light:#E8C97A; }
-.acc-forest { --acc-name:#17402F; --acc-title:#3FA06A; --acc-dark:#276B4A; --acc-light:#9AD3B4; }
+/* accent kept for QR module color only now that artwork is template-driven */
+.acc-teal, .acc-blue, .acc-plum, .acc-gold, .acc-forest { --acc-name:#115C71; --acc-title:#2AA6A4; }
 
 /* legacy aliases so page chrome (buttons, modal) keeps working with the new palette */
 :root{
@@ -153,93 +149,83 @@ a{color:inherit;}
   backface-visibility:hidden;
   box-shadow:var(--shadow);
   overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  background:var(--paper);
+  background:var(--paper) no-repeat center/cover;
+  container-type:inline-size;
 }
 .card-face.back{transform:rotateY(180deg);}
+.card-face.front{background-image:url('img/front-bg.png');}
+.card-face.back{background-image:url('img/back-bg.png');}
 
-/* decorative arch ribbons, echoing the brand mark, bottom-right of the front face */
-.arches{
+/* ---- text overlaid on the Back_template.png artwork, positioned to match its
+   baked-in logo/icon coordinates (measured as % of the 1009x576 template) ---- */
+.tpl-id{
   position:absolute;
-  right:0;
-  bottom:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:1;
-}
-.arch{
-  position:absolute;
-  bottom:-30%;
-  border-radius:999px 999px 0 0;
-}
-.arch.light{
-  right:-6%;
-  width:26%;
-  height:170%;
-  background:var(--acc-light);
-  transform:rotate(9deg);
-}
-.arch.dark{
+  left:5.5%;
+  top:27%;
   right:14%;
-  width:22%;
-  height:150%;
-  background:var(--acc-dark);
-  transform:rotate(5deg);
 }
-
-.card-front{
-  color:var(--slate);
-  padding:16px 76px 14px 20px;
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-  height:100%;
-  position:relative;
-  z-index:2;
-}
-.card-front .logo-row img{
-  height:26px;
-  display:block;
-}
-.card-front .id h3{
+.tpl-id h3{
   font-family:'IBM Plex Sans', sans-serif;
   font-weight:700;
-  font-size:19px;
-  margin:2px 0 1px;
-  line-height:1.2;
+  font-size:5.2cqw;
+  margin:0 0 .3em;
+  line-height:1.15;
   color:var(--acc-name);
 }
-.card-front .id .role{
-  font-size:12.5px;
+.tpl-id .role{
+  font-size:3.1cqw;
   font-weight:500;
   margin:0;
   color:var(--acc-title);
 }
-.card-front .contacts{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  margin-top:auto;
+.tpl-contacts{
+  position:absolute;
+  inset:0;
 }
-.contact-row{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  font-size:10.5px;
+.tpl-row{
+  position:absolute;
+  left:9.6%;
+  right:16%;
+  transform:translateY(-50%);
+  font-size:2.85cqw;
   color:var(--slate);
-  line-height:1.3;
-}
-.contact-row svg{
-  width:12px; height:12px;
-  flex-shrink:0;
-  color:var(--slate);
-}
-.contact-row span{
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+}
+.tpl-row.email{top:66.9%;}
+.tpl-row.phone{top:74.3%;}
+.tpl-row.mobile{top:81.7%;}
+.tpl-row.website{top:89.0%;}
+
+/* ---- QR badge overlaid on the Front_template.png artwork ---- */
+.tpl-qr-badge{
+  position:absolute;
+  right:6%;
+  bottom:8%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5%;
+}
+.tpl-qr-badge .qr-wrap{
+  background:#fff;
+  padding:6%;
+  border-radius:10%;
+  box-shadow:0 4px 14px rgba(0,0,0,0.35);
+  width:23cqw;
+  height:23cqw;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.tpl-qr-badge .qr-wrap canvas, .tpl-qr-badge .qr-wrap img{width:100% !important; height:100% !important;}
+.tpl-qr-badge .cap{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:2.6cqw;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#9FCFCD;
 }
 
 .card-actions{
@@ -268,77 +254,29 @@ a{color:inherit;}
 }
 .icon-btn:hover{background:var(--paper-2);}
 
-/* back of card: QR stamp side */
-.card-back{
-  background:var(--paper);
-  color:var(--slate);
-  height:100%;
+/* back of card: name/title/contact overlay actions */
+.tpl-back-actions{
+  position:absolute;
+  left:5.5%;
+  bottom:3.5%;
   display:flex;
   align-items:center;
-  justify-content:center;
-  gap:16px;
-  padding:18px 22px;
-  position:relative;
+  gap:8px;
+  font-size:2.3cqw;
 }
-.card-back .qr-wrap{
-  background:#fff;
-  padding:8px;
-  border-radius:6px;
-  border:1px solid var(--hair);
-  flex-shrink:0;
-}
-.card-back .qr-wrap img, .card-back .qr-wrap canvas{display:block;}
-.card-back .stamp-text{
+.mini-link{
   font-family:'IBM Plex Mono', monospace;
-  font-size:10.5px;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  line-height:1.6;
-  color:var(--slate-soft);
-}
-.card-back .stamp-text .name{
-  font-family:'IBM Plex Sans', sans-serif;
-  font-size:15px;
-  text-transform:none;
-  letter-spacing:0;
-  font-weight:700;
-  display:block;
-  margin-bottom:4px;
-  color:var(--acc-name);
-}
-.card-back .row-actions{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  margin-top:10px;
-}
-.card-back .row-actions button{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:10px;
-  letter-spacing:.06em;
+  letter-spacing:.04em;
   text-transform:uppercase;
   background:none;
-  border:1px solid var(--hair);
-  color:var(--slate);
-  border-radius:4px;
-  padding:5px 9px;
+  border:none;
+  color:var(--acc-title);
   cursor:pointer;
-  text-align:left;
+  padding:0;
+  font-size:inherit;
 }
-.card-back .row-actions button:hover{background:var(--paper-2);}
-
-.flip-hint{
-  position:absolute;
-  bottom:10px;
-  right:12px;
-  font-family:'IBM Plex Mono', monospace;
-  font-size:9.5px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--slate-soft);
-  cursor:pointer;
-  z-index:2;
-}
+.mini-link:hover{text-decoration:underline;}
+.tpl-back-actions .dot{color:var(--slate-soft); font-size:inherit;}
 
 /* ---------- Modal / form ---------- */
 .modal-backdrop{
@@ -542,12 +480,12 @@ footer.foot-note{
 }
 .not-found{color:rgba(239,233,218,0.7); font-size:14px; line-height:1.7;}
 
-/* standalone flip card on the shared view — reuses .card-front/.card-back/.arches */
+/* standalone flip card on the shared view — reuses .card-face/.tpl-* via cqw sizing, so no per-context overrides needed */
 .big-flip-slot{
   perspective:1800px;
   width:100%;
-  max-width:400px;
-  aspect-ratio:1.72/1;
+  max-width:420px;
+  aspect-ratio:1.75/1;
   margin:0 auto;
   cursor:pointer;
 }
@@ -559,13 +497,6 @@ footer.foot-note{
   transform-style:preserve-3d;
 }
 .big-flip-slot.flipped .card-flip{transform:rotateY(180deg);}
-.big-flip-slot .card-front{padding:24px 90px 22px 26px; gap:12px;}
-.big-flip-slot .card-front .logo-row img{height:30px;}
-.big-flip-slot .card-front .id h3{font-size:23px;}
-.big-flip-slot .card-front .id .role{font-size:14px;}
-.big-flip-slot .contact-row{font-size:12px;}
-.big-flip-slot .contact-row svg{width:13px; height:13px;}
-.big-flip-slot .flip-hint{color:var(--slate-soft);}
 
 .flip-instruction{
   text-align:center;
@@ -579,7 +510,4 @@ footer.foot-note{
 
 @media (max-width:520px){
   .field-row{grid-template-columns:1fr;}
-  .card-back{flex-direction:column; text-align:center; padding:18px;}
-  .card-back .row-actions{align-items:center;}
-  .card-back .row-actions button{text-align:center;}
 }

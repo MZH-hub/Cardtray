@@ -17,8 +17,8 @@ function uid(){
 function encodeCard(card){
   const payload = {
     n:card.name, t:card.title, c:card.company,
-    e:card.email, p:card.phone, w:card.website,
-    b:card.bio, s:card.stock
+    e:card.email, p:card.phone, m:card.mobile, w:card.website,
+    b:card.bio
   };
   const json = JSON.stringify(payload);
   let b64 = btoa(unescape(encodeURIComponent(json)));
@@ -30,33 +30,27 @@ function cardShareUrl(card){
   return base.href;
 }
 
-const ACCENTS = ['teal','blue','plum','gold','forest'];
-
-const ICONS = {
-  email: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>`,
-  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
-  website: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
-};
-
-function contactRows(card){
+function contactRowsOverlay(card){
   const rows = [];
-  if(card.email) rows.push(`<div class="contact-row">${ICONS.email}<span>${escapeHtml(card.email)}</span></div>`);
-  if(card.phone) rows.push(`<div class="contact-row">${ICONS.phone}<span>${escapeHtml(card.phone)}</span></div>`);
-  if(card.website) rows.push(`<div class="contact-row">${ICONS.website}<span>${escapeHtml(card.website)}</span></div>`);
+  if(card.email)   rows.push(`<div class="tpl-row email"><span>${escapeHtml(card.email)}</span></div>`);
+  if(card.phone)   rows.push(`<div class="tpl-row phone"><span>${escapeHtml(card.phone)}</span></div>`);
+  if(card.mobile)  rows.push(`<div class="tpl-row mobile"><span>${escapeHtml(card.mobile)}</span></div>`);
+  if(card.website) rows.push(`<div class="tpl-row website"><span>${escapeHtml(card.website)}</span></div>`);
   return rows.join('');
 }
 
-function cardFaceMarkup(card, accent){
+function cardBackMarkup(card){
   return `
-    <div class="card-front">
-      <div class="logo-row"><img src="logo.svg" alt="Organization logo"></div>
-      <div class="id">
-        <h3>${escapeHtml(card.name || 'Unnamed')}</h3>
-        <p class="role">${escapeHtml(card.title || '')}</p>
-      </div>
-      <div class="contacts">${contactRows(card)}</div>
+    <div class="tpl-id">
+      <h3>${escapeHtml(card.name || 'Unnamed')}</h3>
+      <p class="role">${escapeHtml(card.title || '')}</p>
     </div>
-    <div class="arches"><div class="arch light"></div><div class="arch dark"></div></div>
+    <div class="tpl-contacts">${contactRowsOverlay(card)}</div>
+    <div class="tpl-back-actions">
+      <button class="mini-link" data-action="copy" title="Copy link">Copy link</button>
+      <span class="dot">&middot;</span>
+      <button class="mini-link" data-action="open" title="Open card">Open card</button>
+    </div>
   `;
 }
 
@@ -79,39 +73,27 @@ function render(){
     const slot = document.createElement('div');
     slot.className = 'card-slot';
     slot.dataset.id = card.id;
-    const accent = ACCENTS.includes(card.stock) ? card.stock : 'teal';
 
     slot.innerHTML = `
       <div class="card-flip">
-        <div class="card-face front acc-${accent}">
+        <div class="card-face front">
           <div class="card-actions">
             <button class="icon-btn" data-action="edit" title="Edit">&#9998;</button>
             <button class="icon-btn" data-action="delete" title="Delete">&times;</button>
           </div>
-          ${cardFaceMarkup(card, accent)}
-          <div class="flip-hint" data-action="flip">Flip &#8635;</div>
-        </div>
-        <div class="card-face back acc-${accent}">
-          <div class="card-back">
+          <div class="tpl-qr-badge">
             <div class="qr-wrap" data-qr></div>
-            <div>
-              <div class="stamp-text">
-                <span class="name">${escapeHtml(card.name || '')}</span>
-                Scan to view &amp; save
-              </div>
-              <div class="row-actions">
-                <button data-action="copy">Copy link</button>
-                <button data-action="open">Open card</button>
-                <button data-action="flip">&#8635; Flip back</button>
-              </div>
-            </div>
+            <span class="cap">Tap to flip</span>
           </div>
+        </div>
+        <div class="card-face back">
+          ${cardBackMarkup(card)}
         </div>
       </div>
     `;
     grid.appendChild(slot);
 
-    // generate QR into the back once
+    // generate QR into the front once
     const qrHost = slot.querySelector('[data-qr]');
     new QRCode(qrHost, {
       text: cardShareUrl(card),
@@ -176,13 +158,9 @@ function openModal(card){
   form.company.value = card?.company || '';
   form.email.value = card?.email || '';
   form.phone.value = card?.phone || '';
+  form.mobile.value = card?.mobile || '';
   form.website.value = card?.website || '';
   form.bio.value = card?.bio || '';
-  const stock = ACCENTS.includes(card?.stock) ? card.stock : 'teal';
-  document.querySelectorAll('.stock-dot').forEach(d => {
-    d.classList.toggle('selected', d.dataset.stock === stock);
-  });
-  form.dataset.stock = stock;
   backdrop.classList.add('show');
   form.name.focus();
 }
@@ -196,14 +174,6 @@ document.getElementById('empty-add-btn').addEventListener('click', () => openMod
 document.getElementById('cancel-btn').addEventListener('click', closeModal);
 backdrop.addEventListener('click', (e) => { if(e.target === backdrop) closeModal(); });
 
-document.querySelectorAll('.stock-dot').forEach(dot => {
-  dot.addEventListener('click', () => {
-    document.querySelectorAll('.stock-dot').forEach(d => d.classList.remove('selected'));
-    dot.classList.add('selected');
-    form.dataset.stock = dot.dataset.stock;
-  });
-});
-
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const cards = loadCards();
@@ -214,9 +184,9 @@ form.addEventListener('submit', (e) => {
     company: form.company.value.trim(),
     email: form.email.value.trim(),
     phone: form.phone.value.trim(),
+    mobile: form.mobile.value.trim(),
     website: form.website.value.trim(),
-    bio: form.bio.value.trim(),
-    stock: form.dataset.stock || 'teal'
+    bio: form.bio.value.trim()
   };
   if(!data.name){
     form.name.focus();
