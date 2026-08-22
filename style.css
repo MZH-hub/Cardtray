@@ -153,8 +153,8 @@ a{color:inherit;}
   container-type:inline-size;
 }
 .card-face.back{transform:rotateY(180deg);}
-.card-face.front{background-image:url('img/front-bg.png');}
-.card-face.back{background-image:url('img/back-bg.png');}
+.card-face.front{background-image:url('Front\ template.png');}
+.card-face.back{background-image:url('Back\ template.png');}
 
 /* ---- text overlaid on the Back_template.png artwork, positioned to match its
    baked-in logo/icon coordinates (measured as % of the 1009x576 template) ---- */
